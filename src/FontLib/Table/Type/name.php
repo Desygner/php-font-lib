@@ -154,8 +154,16 @@ class name extends Table {
     foreach ($records as $record) {
       $font->seek($tableOffset + $data["stringOffset"] + $record->offset);
       $s                      = $font->read($record->length);
-      $record->string         = Font::UTF16ToUTF8($s);
-      $names[$record->nameID] = $record;
+      if ( mb_detect_encoding($s) == 'ASCII' ) {
+        $record->string         = $s;
+      } else {
+        $record->string         = Font::UTF16ToUTF8($s);
+      }
+      //DEBUG: 
+      //    echo $record->string . "\n";
+      //Take first element in font
+      if(!isset($names[$record->nameID]))
+        $names[$record->nameID] = $record;
     }
 
     $data["records"] = $names;
