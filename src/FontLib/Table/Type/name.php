@@ -43,6 +43,8 @@ class name extends Table {
   const NAME_COMPAT_FULL_NAME   = 18;
   const NAME_SAMPLE_TEXT        = 19;
 
+  const LANGUAGE_ID_ENGLISH          = 1033;
+
   static $nameIdCodes = array(
     0  => "Copyright",
     1  => "FontName",
@@ -149,6 +151,12 @@ class name extends Table {
 
       $records[] = $record;
     }
+
+    $englishRecords = array_filter($records, function($record) {
+        return $record->languageID == self::LANGUAGE_ID_ENGLISH;
+    });
+
+    $records = count($englishRecords) > 0 ? $englishRecords : $records;
 
     $names = array();
     foreach ($records as $record) {
